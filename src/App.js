@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React, { useState, useEffect } from 'react';
 
 function App() {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    // Hacer una solicitud GET al backend
+    fetch('http://localhost/api/api.php')
+      .then(response => response.json())
+      .then(data => setData(data))
+      .catch(error => console.error('Error:', error));
+  }, []);
+
+  const handlePostRequest = () => {
+    // Hacer una solicitud POST al backend
+    fetch('http://localhost/api/api.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ example: 'data' }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data)
+        setData(data)
+      })
+      .catch(error => console.error('Error:', error));
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>React y PHP</h1>
+      {data ? <p>{data.message}</p> : <p>Cargando...</p>}
+      <button onClick={handlePostRequest}>Enviar Solicitud POST</button>
     </div>
   );
 }
